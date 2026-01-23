@@ -3,7 +3,7 @@ import json
 import copy
 
 st.set_page_config(page_title="MT5 Symbol Suffix Generator", layout="wide")
-st.title("MT5 Symbol Suffix Generator")
+st.title("Upload your .json file and get the new suffix in one click")
 
 # ===================== Helpers =====================
 def normalize_path(p):
@@ -184,3 +184,4 @@ if uploaded:
             file_name="symbols_generated.json",
             mime="application/json"
         )
+
