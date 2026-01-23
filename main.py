@@ -85,7 +85,7 @@ def render_tree_preview(tree):
                 st.write(f"📄 {s['Symbol']}")
 
 # ===================== Upload =====================
-uploaded = st.file_uploader("Upload MT5 Symbols JSON", type=["json"])
+uploaded = st.file_uploader("Upload your .json file and get the new suffix symbols in few clicks", type=["json"])
 
 if uploaded:
     data = json.load(uploaded)
@@ -184,5 +184,6 @@ if uploaded:
             file_name="symbols_generated.json",
             mime="application/json"
         )
+
 
 
