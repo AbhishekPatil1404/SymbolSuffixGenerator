@@ -1,4 +1,3 @@
-
 # import streamlit as st
 # import json
 # import copy
@@ -10,33 +9,8 @@
 # def normalize_path(p):
 #     return p.replace("/", "\\")
 
-# # def apply_suffix(symbol, suffix):
-# #     base = symbol.split(".", 1)[0]
-# #     return f"{base}{suffix}"
-
-# def apply_suffix(symbol, suffix, remove_existing=True):
-#     """
-#     Handles:
-#     - Removing old suffix
-#     - Adding suffix with dot
-#     - Adding suffix without dot
-#     - Pure removal (empty suffix)
-#     """
-
-#     if remove_existing:
-#         base = symbol.split(".", 1)[0]
-#     else:
-#         base = symbol
-
-#     # If suffix is empty → only remove
-#     if not suffix:
-#         return base
-
-#     # If suffix starts with dot → append directly
-#     if suffix.startswith("."):
-#         return f"{base}{suffix}"
-
-#     # If suffix does NOT start with dot → append directly without dot
+# def apply_suffix(symbol, suffix):
+#     base = symbol.split(".", 1)[0]
 #     return f"{base}{suffix}"
 
 # def build_tree(symbols):
@@ -138,18 +112,14 @@
 #     suffix = st.text_input("Enter suffix (example: .f, .pro)")
 #     keep_source = st.radio("Keep source for history synchronization?", ["Yes", "No"])
 #     new_root = st.text_input("New root folder name (example: Symbol.f)")
-#     remove_existing = st.radio(
-#         "Remove existing suffix before applying new one?",
-#         ["Yes", "No"]
-#     )
 
 #     submit = st.button("Generate Symbols")
 
 #     if submit:
 #         # ---------- Validation ----------
-#         # if not suffix.startswith("."):
-#         #     st.error("Suffix must start with a dot (e.g. .f)")
-#         #     st.stop()
+#         if not suffix.startswith("."):
+#             st.error("Suffix must start with a dot (e.g. .f)")
+#             st.stop()
 
 #         if not new_root:
 #             st.error("New root folder name is required.")
@@ -176,13 +146,7 @@
 #                 continue
 
 #             new_sym = copy.deepcopy(sym)
-#             # new_symbol = apply_suffix(sym["Symbol"], suffix)
-
-#             new_symbol = apply_suffix(
-#                 sym["Symbol"],
-#                 suffix.strip(),
-#                 remove_existing == "Yes"
-#             )
+#             new_symbol = apply_suffix(sym["Symbol"], suffix)
 
 #             path_parts = old_path.split("\\")
 #             path_parts[0] = new_root  # rename root folder
@@ -190,7 +154,6 @@
 #             new_sym["Symbol"] = new_symbol
 #             new_sym["Path"] = "\\".join(path_parts[:-1] + [new_symbol])
 #             new_sym["Source"] = sym["Symbol"] if keep_source == "Yes" else ""
-
 
 #             new_symbols.append(new_sym)
 
@@ -227,13 +190,6 @@
 
 
 
-
-
-
-
-
-
-
 import streamlit as st
 import json
 import copy
@@ -245,8 +201,33 @@ st.title("MT5 Symbol Suffix Generator")
 def normalize_path(p):
     return p.replace("/", "\\")
 
-def apply_suffix(symbol, suffix):
-    base = symbol.split(".", 1)[0]
+# def apply_suffix(symbol, suffix):
+#     base = symbol.split(".", 1)[0]
+#     return f"{base}{suffix}"
+
+def apply_suffix(symbol, suffix, remove_existing=True):
+    """
+    Handles:
+    - Removing old suffix
+    - Adding suffix with dot
+    - Adding suffix without dot
+    - Pure removal (empty suffix)
+    """
+
+    if remove_existing:
+        base = symbol.split(".", 1)[0]
+    else:
+        base = symbol
+
+    # If suffix is empty → only remove
+    if not suffix:
+        return base
+
+    # If suffix starts with dot → append directly
+    if suffix.startswith("."):
+        return f"{base}{suffix}"
+
+    # If suffix does NOT start with dot → append directly without dot
     return f"{base}{suffix}"
 
 def build_tree(symbols):
@@ -348,14 +329,18 @@ if uploaded:
     suffix = st.text_input("Enter suffix (example: .f, .pro)")
     keep_source = st.radio("Keep source for history synchronization?", ["Yes", "No"])
     new_root = st.text_input("New root folder name (example: Symbol.f)")
+    remove_existing = st.radio(
+        "Remove existing suffix before applying new one?",
+        ["Yes", "No"]
+    )
 
     submit = st.button("Generate Symbols")
 
     if submit:
         # ---------- Validation ----------
-        if not suffix.startswith("."):
-            st.error("Suffix must start with a dot (e.g. .f)")
-            st.stop()
+        # if not suffix.startswith("."):
+        #     st.error("Suffix must start with a dot (e.g. .f)")
+        #     st.stop()
 
         if not new_root:
             st.error("New root folder name is required.")
@@ -382,7 +367,13 @@ if uploaded:
                 continue
 
             new_sym = copy.deepcopy(sym)
-            new_symbol = apply_suffix(sym["Symbol"], suffix)
+            # new_symbol = apply_suffix(sym["Symbol"], suffix)
+
+            new_symbol = apply_suffix(
+                sym["Symbol"],
+                suffix.strip(),
+                remove_existing == "Yes"
+            )
 
             path_parts = old_path.split("\\")
             path_parts[0] = new_root  # rename root folder
@@ -390,6 +381,7 @@ if uploaded:
             new_sym["Symbol"] = new_symbol
             new_sym["Path"] = "\\".join(path_parts[:-1] + [new_symbol])
             new_sym["Source"] = sym["Symbol"] if keep_source == "Yes" else ""
+
 
             new_symbols.append(new_sym)
 
@@ -420,6 +412,8 @@ if uploaded:
             file_name="symbols_generated.json",
             mime="application/json"
         )
+
+
 
 
 
